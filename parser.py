@@ -9,8 +9,10 @@ class Parser:
 		self.pads = []
 		self.conexao = []
 		self.C = []
+		self.A = []
 		self.generate(file)
 		self.criarC()
+		self.criarA()
 
 	def generate(self, file):
 		for line in file:
@@ -54,7 +56,20 @@ class Parser:
 						self.C[int(k)][int(lk)]=1
 						self.C[int(lk)][int(k)]=1
 					vetorAux=vetorAux[1:]
-				
+	def criarA(self):
+		self.A = self.C-(self.C+self.C)
+		diagonalA = self.C.sum(axis=0)
+		for n in xrange(0, int(self.nGates)):
+			self.A[n][n] = diagonalA[n]
+		for i in self.pads:
+			retorno = self.netConectaGates(i[1])
+			for x in retorno:
+				self.A[x][x]=self.A[x][x]+1
 
-	
-			
+
+	def netConectaGates(self, nNet):
+		retorno = []
+		for n in xrange(0, int(self.nGates)):
+			if self.conexao[int(nNet)-1][n]==1:
+				retorno.append(n)
+		return retorno
