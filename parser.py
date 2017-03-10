@@ -10,12 +10,15 @@ class Parser:
 		self.conexao = []
 		self.C = []
 		self.A = []
+		self.Ax = []
+		self.Ay = []
 		self.Bx = []
 		self.By = []
 		self.generate(file)
 		self.criarC()
 		self.criarA()
 		self.criarB()
+		self.criarAxAy()
 
 	def generate(self, file):
 		for line in file:
@@ -41,24 +44,10 @@ class Parser:
 					list=line[0:line.find('#')].lower().split()
 					self.pads.append(list) 
 					break
-
-	def criarC(self):
-		self.C = np.zeros( (int(self.nGates),int(self.nGates)) )
-		for i in self.conexao:
-			vetorAux = []
-			contadorj =0
-			for j in i:
-				if j==1:
-					vetorAux.append(contadorj)
-				contadorj=contadorj+1
-			if len(vetorAux)>1:
-				for k in vetorAux:
-					if len(vetorAux)==1:
-						break
-					for lk in vetorAux[1:]:
-						self.C[int(k)][int(lk)]=1
-						self.C[int(lk)][int(k)]=1
-					vetorAux=vetorAux[1:]
+	def criarAxAy(self):
+		self.Ax = np.linalg.solve(self.A, self.Bx)
+		self.Ay = np.linalg.solve(self.A, self.By) 
+ 
 	def criarA(self):
 		self.A = self.C-(self.C+self.C)
 		diagonalA = self.C.sum(axis=0)
@@ -78,6 +67,23 @@ class Parser:
 				self.Bx[x]= i[2]
 				self.By[x]= i[3]
 
+	def criarC(self):
+		self.C = np.zeros( (int(self.nGates),int(self.nGates)) )
+		for i in self.conexao:
+			vetorAux = []
+			contadorj =0
+			for j in i:
+				if j==1:
+					vetorAux.append(contadorj)
+				contadorj=contadorj+1
+			if len(vetorAux)>1:
+				for k in vetorAux:
+					if len(vetorAux)==1:
+						break
+					for lk in vetorAux[1:]:
+						self.C[int(k)][int(lk)]=1
+						self.C[int(lk)][int(k)]=1
+					vetorAux=vetorAux[1:]
 
 	def netConectaGates(self, nNet):
 		retorno = []
