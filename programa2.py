@@ -33,7 +33,7 @@ class Parser:
 			list = line[0:line.find('#')].lower().split()
 			self.nGates = list[0] #nGates
 			self.nNet = list[1] #nNet
-			print list[1]
+			print(list[1])
 			for n in xrange(0, int(self.nGates)):
 				for line in file:	
 					list=line[0:line.find('#')].lower().split()

@@ -26,7 +26,7 @@ class Parser:
 			self.nGates = list[0] #nGates
 			self.nNet = list[1] #nNet
 			self.conexao = np.zeros( (int(self.nNet),int(self.nGates)) )
-			for n in xrange(0, int(self.nGates)):
+			for n in range(int(self.nGates)):
 				for line in file:	
 					list=line[0:line.find('#')].lower().split()
 					self.gates.append(list[2:]) 
@@ -39,7 +39,7 @@ class Parser:
 				self.nPad = list[0] #nPad
 				break
 
-			for n in xrange(0, int(self.nPad)):	
+			for n in range(int(self.nPad)):	
 				for line in file:	
 					list=line[0:line.find('#')].lower().split()
 					self.pads.append(list) 
@@ -51,7 +51,7 @@ class Parser:
 	def criarA(self):
 		self.A = self.C-(self.C+self.C)
 		diagonalA = self.C.sum(axis=0)
-		for n in xrange(0, int(self.nGates)):
+		for n in range(int(self.nGates)):
 			self.A[n][n] = diagonalA[n]
 		for i in self.pads:
 			retorno = self.netConectaGates(i[1])
@@ -87,7 +87,7 @@ class Parser:
 
 	def netConectaGates(self, nNet):
 		retorno = []
-		for n in xrange(0, int(self.nGates)):
+		for n in range(int(self.nGates)):
 			if self.conexao[int(nNet)-1][n]==1:
 				retorno.append(n)
 		return retorno
