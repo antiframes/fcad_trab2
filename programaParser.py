@@ -10,13 +10,37 @@ from scipy.sparse.linalg import spsolve
 import math
 import cairo
 
-WIDTH, HEIGHT = 500, 500
+WIDTH, HEIGHT = 1000, 1000
 
 def main(argv):
 	c1 = open(argv[0], 'r')
 	net1 = parser.Parser(c1)
 	#print(net1.Ax)
 	#print(net1.Ay)
+	
+	#ASSIGNMENT - dividir em dois lados
+	#passo 1: detectar a mediana
+	aux = net1.Ax
+	aux = numpy.sort(aux)
+	sz  = len(aux)
+	if sz%2 == 0:
+		med = (aux[int(sz/2)-1] + aux[int(sz/2)])/2
+	else:
+		med = aux[int(sz/2)]
+	#passo 2: dividir em dois grupos
+	lefts=[]
+	for x in net1.Ax:
+		if x>=med:
+			lefts.append(False)
+		else:
+			lefts.append(True)
+	#2QP - Posicionar os da esquerda
+	left_gates_x=[]
+	left_gates_y=[]
+	for i in range(sz):
+		if (lefts[i]==True):
+			#para cada gate vizinho, se estiver na direita, criar pseudopad e conectar gate com pseudopad
+	#EXPORTAR IMAGEM
 	surface = cairo.ImageSurface (cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
 	ctx = cairo.Context (surface)
 	ctx.scale (WIDTH, HEIGHT) # Normalizing the canvas
@@ -28,6 +52,10 @@ def main(argv):
 	ctx.set_source_rgb (0.3, 0.2, 0.5) # Solid color
 	ctx.set_line_width (0.02)
 	for i in range(len(net1.Ax)):
+		if lefts[i]==True:
+			ctx.set_source_rgb (0.3, 0.2, 0.5)
+		else:
+			ctx.set_source_rgb (0.5, 0.3, 0.2)
 		ctx.rectangle(net1.Ax[i]*0.01,net1.Ay[i]*0.01,0.01,0.01)
 		ctx.close_path()
 		ctx.stroke()
