@@ -59,13 +59,13 @@ class Parser:
 				self.A[x][x]=self.A[x][x]+1
 
 	def criarB(self):
-		self.Bx = np.zeros( (int(self.nGates), 1) )
-		self.By = np.zeros( (int(self.nGates), 1) )
+		self.Bx = np.zeros( (int(self.nGates), 1), dtype=np.float_ )
+		self.By = np.zeros( (int(self.nGates), 1), dtype=np.float_ )
 		for i in self.pads:
 			retorno = self.netConectaGates(i[1])
 			for x in retorno:
-				self.Bx[x]= i[2]
-				self.By[x]= i[3]
+				self.Bx[x] += float(i[2])
+				self.By[x] += float(i[3])
 
 	def criarC(self):
 		self.C = np.zeros( (int(self.nGates),int(self.nGates)) )
