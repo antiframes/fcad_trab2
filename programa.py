@@ -31,9 +31,11 @@ def main(argv):
 	lefts=[]
 	padsLeft=[]
 
-	for x in net1.Ax:
-		if x>=med:
+	for x in range(len(net1.Ax)):
+		if net1.Ax[x]>=med:
 			lefts.append(False)
+			if net1.Ax[x] < 50:
+				net1.Ax[x] = 100-net1.Ax[x]
 		else:
 			lefts.append(True)
 			
@@ -50,6 +52,7 @@ def main(argv):
 			gates_left.append(i)		
 		else:
 			gates_right.append(i)
+	plotarImage(net1.pads, net1.Bx , net1.By , net1.Ax , net1.Ay,"QP1")	
 
 	#2QP - Posicionar os da esquerda
 	pad_left = []
@@ -118,7 +121,11 @@ def main(argv):
 		if int(newPadsLeft[n][2])>50:
 			newPadsLeft[n][2] = 50
 	#FIM QP2
-
+	#Propagar resultado para A original
+	for k in range(len(gates_left)):
+		net1.Ax[gates_left[k]] = Ax_left[k]
+		net1.Ay[gates_left[k]] = Ay_left[k]
+	
 	#3QP - Posicionar os da Direita
 	pad_right = []
 	C_right = []
@@ -163,10 +170,10 @@ def main(argv):
 		retorno = net1.netConectaGates(n[1])
 		for x in retorno:
 			for k in range(len(gates_right)):
-				if gates_right[k] == x: #Gate está na esquerda
+				if gates_right[k] == x: #Gate está na direita
 					A_right[k][k]=A_right[k][k]+1 #Soma o pad na matriz A esquerda
 					#Coneta ao Pad
-					if By_right[k]==0 and Bx_right[k]==0:
+					if By_right[k]==0 and Bx_right[k]==0: # se não tem dado
 						By_right[k] = float(n[3])		# Manter o Y sempre
 						if padsLeft[int(n[0])-1] == False: # Se está na Direita
 							Bx_right[k] = float(n[2])	#Mantem o memso X
@@ -183,14 +190,16 @@ def main(argv):
 
 	newPadsright = copy.deepcopy(net1.pads)
 	for n in range(len(newPadsright)):	
-		if int(newPadsright[n][2])>50:
+		if int(newPadsright[n][2])<50:
 			newPadsright[n][2] = 50
 	#FIM QP3
-
-	plotarImage(net1.pads, net1.Bx , net1.By , net1.Ax , net1.Ay,"QP1")	
+	for k in range(len(gates_right)):
+		net1.Ax[gates_right[k]] = Ax_right[k]
+		net1.Ay[gates_right[k]] = Ay_right[k]
+	
 	plotarImage(newPadsLeft, Bx_left , By_left , Ax_left , Ay_left ,"QP2")
 	plotarImage(newPadsright, Bx_right , By_right , Ax_right , Ay_right ,"QP3")		
-
+	plotarImage(net1.pads, net1.Bx , net1.By , net1.Ax , net1.Ay,"Final")	
 
 def plotarImage(pads, Bx, By, Ax, Ay,name):
 	#EXPORTAR IMAGEM

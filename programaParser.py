@@ -14,6 +14,7 @@ WIDTH, HEIGHT = 1000, 1000
 
 def main(argv):
 	c1 = open(argv[0], 'r')
+
 	net1 = parser.Parser(c1)
 	#print(net1.Ax)
 	#print(net1.Ay)
@@ -29,9 +30,11 @@ def main(argv):
 		med = aux[int(sz/2)]
 	#passo 2: dividir em dois grupos
 	lefts=[]
-	for x in net1.Ax:
-		if x>=med:
+	for x in range(len(net1.Ax)):
+		if net1.Ax[x]>=med:
 			lefts.append(False)
+			if net1.Ax[x] < 50:
+				net1.Ax[x] = 100-net1.Ax[x]
 		else:
 			lefts.append(True)
 	#2QP - Posicionar os da esquerda
@@ -39,9 +42,9 @@ def main(argv):
 	left_gates_y=[]
 	for i in range(sz):
 		if (lefts[i]==True):
-			#para cada gate vizinho, se estiver na direita, criar pseudopad e conectar gate com pseudopad
-	#EXPORTAR IMAGEM
-	surface = cairo.ImageSurface (cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
+			pass
+
+	surface = cairo.ImageSurface (cairo.FORMAT_ARGB32, WIDTH, HEIGHT )
 	ctx = cairo.Context (surface)
 	ctx.scale (WIDTH, HEIGHT) # Normalizing the canvas
 	pat = cairo.LinearGradient (0.0, 0.0, 0.0, 1.0)
