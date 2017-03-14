@@ -63,8 +63,8 @@ def main(argv):
 
 	#Bx By left
 	szleft = len(gates_left)
-	Bx_left = numpy.zeros( (szleft, 1), dtype=numpy.float_ )
-	By_left = numpy.zeros( (szleft, 1), dtype=numpy.float_ )
+	Bx_left = numpy.zeros( szleft, dtype=numpy.float_ )
+	By_left = numpy.zeros( szleft, dtype=numpy.float_ )
 
 	#Criar C left
 	C_left = numpy.zeros( (szleft, szleft ) )
@@ -80,8 +80,8 @@ def main(argv):
 						entrou =1
 
 				if entrou==0:		# caso não encontrou nos vizinhos C, então é um pad
-					Bx_left[i] = 50					  #addPadGate PSEUDO
-					By_left[i] = net1.By[int(j)]	  #addPadGate PSEUDO
+					Bx_left[i] += 50					  #addPadGate PSEUDO
+					By_left[i] += net1.By[int(j)]	  #addPadGate PSEUDO
 					diagonalAux[i] = diagonalAux[i]+1 #addPadGate PSEUDO
 
 	#Criar A left
@@ -99,26 +99,23 @@ def main(argv):
 				if gates_left[k] == x: #Gate está na esquerda
 					A_left[k][k]=A_left[k][k]+1 #Soma o pad na matriz A esquerda
 					#Coneta ao Pad
-					if By_left[k]==0 and Bx_left[k]==0:
-						By_left[k] = float(n[3])		# Manter o Y sempre
-						if padsLeft[int(n[0])-1] == True: # Se está na Esquerda
-							Bx_left[k] = float(n[2])	#Mantem o memso X
-						else:
-							Bx_left[k] = 50			#Senão troca o x para 50
+					By_left[k] += float(n[3])		# Manter o Y sempre
+					if padsLeft[int(n[0])-1] == True: # Se está na Esquerda
+						Bx_left[k] += float(n[2])	#Mantem o memso X
+					else:
+						Bx_left[k] += 50			#Senão troca o x para 50
 
 	#Ax Ay left	
-	aux = numpy.linalg.solve(A_left, Bx_left)
-	for n in aux:
-		Ax_left.append(n[0])
-	aux = numpy.linalg.solve(A_left, By_left) 
-	for n in aux:
-		Ay_left.append(n[0])
-
+	Ax_left = numpy.linalg.solve(A_left, Bx_left)
+	Ay_left = numpy.linalg.solve(A_left, By_left) 
+	
+	#Copia Para Imprimir Pads
 	newPadsLeft = copy.deepcopy(net1.pads)
 	for n in range(len(newPadsLeft)):	
 		if int(newPadsLeft[n][2])>50:
 			newPadsLeft[n][2] = 50
 	#FIM QP2
+
 	#Propagar resultado para A original
 	for k in range(len(gates_left)):
 		net1.Ax[gates_left[k]] = Ax_left[k]
@@ -135,8 +132,8 @@ def main(argv):
 
 	#Bx By right
 	szright = len(gates_right)
-	Bx_right = numpy.zeros( (szright, 1), dtype=numpy.float_ )
-	By_right = numpy.zeros( (szright, 1), dtype=numpy.float_ )
+	Bx_right = numpy.zeros( szright, dtype=numpy.float_ )
+	By_right = numpy.zeros( szright, dtype=numpy.float_ )
 
 	#Criar C right
 	C_right = numpy.zeros( (szright, szright ) )
@@ -171,20 +168,15 @@ def main(argv):
 				if gates_right[k] == x: #Gate está na direita
 					A_right[k][k]=A_right[k][k]+1 #Soma o pad na matriz A esquerda
 					#Coneta ao Pad
-					if By_right[k]==0 and Bx_right[k]==0: # se não tem dado
-						By_right[k] += float(n[3])		# Manter o Y sempre
-						if padsLeft[int(n[0])-1] == False: # Se está na Direita
-							Bx_right[k] += float(n[2])	#Mantem o memso X
-						else:
-							Bx_right[k] += 50			#Senão troca o x para 50
+					By_right[k] += float(n[3])		# Manter o Y sempre
+					if padsLeft[int(n[0])-1] == False: # Se está na Direita
+						Bx_right[k] += float(n[2])	#Mantem o memso X
+					else:
+						Bx_right[k] += 50			#Senão troca o x para 50
 	
 	#Ax Ay right	
-	aux = numpy.linalg.solve(A_right, Bx_right)
-	for n in aux:
-		Ax_right.append(n[0])
-	aux = numpy.linalg.solve(A_right, By_right) 
-	for n in aux:
-		Ay_right.append(n[0])
+	Ax_right = numpy.linalg.solve(A_right, Bx_right)
+	Ay_right = numpy.linalg.solve(A_right, By_right) 
 
 	newPadsright = copy.deepcopy(net1.pads)
 	for n in range(len(newPadsright)):	
