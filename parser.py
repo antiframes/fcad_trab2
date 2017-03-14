@@ -1,6 +1,5 @@
 import numpy as np
 import sys
-
 class Parser:
 	def __init__(self, file):
 		self.nGates = 0
@@ -31,8 +30,6 @@ class Parser:
 					retorno.append(aux-1)
 		return retorno
 			
-
-
 	def conectadoAoGates(self, i):
 		retorno = []
 		for n in range(len(self.C[i])):
@@ -67,13 +64,8 @@ class Parser:
 					break
 
 	def criarAxAy(self):
-		aux = np.linalg.solve(self.A, self.Bx)
-		for n in aux:
-			self.Ax.append(n[0])
-
-		aux = np.linalg.solve(self.A, self.By) 
-		for n in aux:
-			self.Ay.append(n[0])
+		self.Ax = np.linalg.solve(self.A, self.Bx)
+		self.Ay = np.linalg.solve(self.A, self.By)
 
 	def criarA(self):
 		self.A = self.C-(self.C+self.C)
@@ -86,13 +78,13 @@ class Parser:
 				self.A[x][x]=self.A[x][x]+1
 
 	def criarB(self):
-		self.Bx = np.zeros( (int(self.nGates), 1), dtype=np.float_ )
-		self.By = np.zeros( (int(self.nGates), 1), dtype=np.float_ )
+		self.Bx = np.zeros( int(self.nGates), dtype=np.float_ )
+		self.By = np.zeros( int(self.nGates), dtype=np.float_ )
 		for i in self.pads:
 			retorno = self.netConectaGates(i[1])
 			for x in retorno:
-				self.Bx[x] = float(i[2])
-				self.By[x] = float(i[3])
+				self.Bx[x] += float(i[2])
+				self.By[x] += float(i[3])
 
 	def criarC(self):
 		self.C = np.zeros( (int(self.nGates),int(self.nGates)) )

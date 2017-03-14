@@ -33,8 +33,6 @@ def main(argv):
 	for x in range(len(net1.Ax)):
 		if net1.Ax[x]>=med:
 			lefts.append(False)
-			if net1.Ax[x] < 50:
-				net1.Ax[x] = 100-net1.Ax[x]
 		else:
 			lefts.append(True)
 	#2QP - Posicionar os da esquerda
