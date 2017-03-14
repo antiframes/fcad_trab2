@@ -147,7 +147,6 @@ def main(argv):
 						C_right[k][i] = 1
 						C_right[i][k] = 1	
 						entrou =1
-
 				if entrou==0:		# caso não encontrou nos vizinhos C, então é um pad
 					Bx_right[i] += 50				  #addPadGate PSEUDO
 					By_right[i] += net1.By[int(j)]	  #addPadGate PSEUDO
