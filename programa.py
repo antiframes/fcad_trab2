@@ -6,8 +6,6 @@ import programa2
 
 import numpy
 from numpy import array
-from scipy.sparse import coo_matrix
-from scipy.sparse.linalg import spsolve
 
 import math
 import cairo
@@ -17,19 +15,22 @@ WIDTH, HEIGHT = 1000, 1000
 def main(argv):
 	c1 = open(argv[0], 'r')
 	net1 = parser.Parser(c1)
+	#print(net1.Ax)
+	#print(net1.Ay)
 
 	#ASSIGNMENT - dividir em dois lados
 	#passo 1: detectar a mediana
 	aux = net1.Ax
 	aux = numpy.sort(aux)
 	sz  = len(aux)
-	if sz%2 == 0:
-		med = (aux[int(sz/2)-1] + aux[int(sz/2)])/2
+	if (sz%2) == 1:
+		med = (aux[int(sz/2)-2] + aux[int(sz/2)]-1)/2
 	else:
-		med = aux[int(sz/2)]
+		med = aux[int(sz/2)-1]
 	#passo 2: dividir em dois grupos
 	lefts=[]
 	padsLeft=[]
+	
 
 	for x in range(len(net1.Ax)):
 		if net1.Ax[x]>=med:
@@ -37,6 +38,7 @@ def main(argv):
 		else:
 			lefts.append(True)
 			
+	
 	for x in net1.pads:
 		if int(x[2])*0.01> .5:
 			padsLeft.append(False)
@@ -190,6 +192,14 @@ def main(argv):
 	plotarImage(newPadsLeft, Bx_left , By_left , Ax_left , Ay_left ,"QP2")
 	plotarImage(newPadsright, Bx_right , By_right , Ax_right , Ay_right ,"QP3")		
 	plotarImage(net1.pads, net1.Bx , net1.By , net1.Ax , net1.Ay,"Final")	
+	
+	wirelength=0
+	for k in range(len(net1.Ax)):
+		connections = net1.netConectaGates(k)
+		for l in range(len(connections)):
+			dist = math.sqrt(pow(net1.Ax[k]+net1.Ax[l],2) +pow(net1.Ay[k]+net1.Ay[l],2))
+			wirelength+=(dist/2) #programa calcularia distância de A para B e de B para A, dividir por 2 soluciona isto
+	print("Comprimento total do fio:",wirelength)		
 	
 	nomeOut = "saida"
 	out = open(nomeOut, 'w') 
